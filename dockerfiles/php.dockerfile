@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www/html
 
@@ -32,3 +32,7 @@ COPY dockerfiles/php.ini /usr/local/etc/php/conf.d/php84-custom.ini
 
 USER laravel
 # first the Dockerfile creates an image on top of the php:8.4-fpm-alpine .
+
+# composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer install
