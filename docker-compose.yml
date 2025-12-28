@@ -44,31 +44,31 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     command: [ "mysqld", "--mysql-native-password=ON" ]
-  # phpmyadmin:
-  #   image: phpmyadmin/phpmyadmin:latest
-  #   restart: always
-  #   container_name: phpmyadmin_laravel_environment
-  #   depends_on:
-  #     - mysql
-  #   ports:
-  #     - '8891:80'
-  #   environment:
-  #     - PMA_HOST=mysql
-  #     - PMA_USER=root
-  #     - PMA_PASSWORD=secret
-  #   networks:
-  #     - laravel_environment
-  # redis:
-  #   image: redis:alpine
-  #   container_name: redis_laravel_environment
-  #   restart: unless-stopped
-  #   ports:
-  #     - 6379:6379
-  #   networks:
-  #     - laravel_environment
-  #   volumes:
-  #     - redis_data:/data
-  #   command: redis-server --appendonly yes --replica-read-only no
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    container_name: phpmyadmin_laravel_environment
+    depends_on:
+      - mysql
+    ports:
+      - '8891:80'
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=secret
+    networks:
+      - laravel_environment
+  redis:
+    image: redis:alpine
+    container_name: redis_laravel_environment
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      - laravel_environment
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --replica-read-only no
   # composer:
   #   build:
   #     context: .
@@ -80,46 +80,46 @@ services:
   #     - php
   #   networks:
   #     - laravel_environment
-  # artisan:
-  #   build:
-  #     context: .
-  #     dockerfile: dockerfiles/php.dockerfile
-  #   container_name: artisan_laravel_environment
-  #   volumes:
-  #     - ./src:/var/www/html
-  #   working_dir: /var/www/html
-  #   networks:
-  #     - laravel_environment
-  # scheduler:
-  #   build:
-  #     context: .
-  #     dockerfile: dockerfiles/php.dockerfile
-  #   container_name: scheduler_laravel_environment
-  #   volumes:
-  #     - ./src:/var/www/html
-  #   working_dir: /var/www/html
-  #   entrypoint: [ "php", "artisan", "schedule:work" ]
-  #   networks:
-  #     - laravel_environment
-  # mailhog:
-  #   image: mailhog/mailhog:latest
-  #   container_name: mailhog_laravel_environment
-  #   ports:
-  #     - 1025:1025
-  #     - 8025:8025
-  #   networks:
-  #     - laravel_environment
-  node:
-    image: node:24-alpine
-    container_name: node_laravel_environment
-    ports:
-      - 3001:3000
+  artisan:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    container_name: artisan_laravel_environment
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
-    entrypoint: [ "npm", "run", "dev" ]
     networks:
       - laravel_environment
+  scheduler:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    container_name: scheduler_laravel_environment
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: [ "php", "artisan", "schedule:work" ]
+    networks:
+      - laravel_environment
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog_laravel_environment
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - laravel_environment
+  # node:
+  #   image: node:24-alpine
+  #   container_name: node_laravel_environment
+  #   ports:
+  #     - 3001:3000
+  #   volumes:
+  #     - ./src:/var/www/html
+  #   working_dir: /var/www/html
+  #   entrypoint: [ "npm", "run", "dev" ]
+  #   networks:
+  #     - laravel_environment
 volumes:
  mysql_data:
    driver: local
